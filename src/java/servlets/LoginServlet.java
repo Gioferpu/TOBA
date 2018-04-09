@@ -1,10 +1,12 @@
 package servlets;
 
+import beans.User;
 import java.io.IOException;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 public class LoginServlet extends HttpServlet {
 
@@ -22,7 +24,7 @@ public class LoginServlet extends HttpServlet {
         response.setContentType("text/html;charset=UTF-8");
         if (request.getParameter("input_login") == null) {
             // Simply redirect user back to the index page if no login trigger was found
-            getServletContext().getRequestDispatcher("/index.html").forward(request, response);
+            getServletContext().getRequestDispatcher("/index.jsp").forward(request, response);
             return;
         }
 
@@ -31,13 +33,26 @@ public class LoginServlet extends HttpServlet {
         String password = request.getParameter("input_password");
 
         // Validate login
-        if (username.equals("jsmith@toba.com") && password.equals("letmein")) {
-            // Redirect to account activity
-            getServletContext().getRequestDispatcher("/account_activity.html").forward(request, response);
-        } else {
+        HttpSession session = request.getSession(true);
+
+        if (session.getAttribute("user") == null) {
             // Failed logins redirect to failed page
-            getServletContext().getRequestDispatcher("/login_failure.html").forward(request, response);
+            getServletContext().getRequestDispatcher("/login_failure.jsp").forward(request, response);
+            return;
         }
+        
+        User user = (User) session.getAttribute("user");
+
+        if (username.equals(user.getUsername()) && password.equals(user.getPassword())) {
+            // Redirect to account activity
+            user.setLoggedIn(true);
+            session.setAttribute("user", user);
+            getServletContext().getRequestDispatcher("/account_activity.jsp").forward(request, response);
+            return;
+        }
+        
+        // Failed logins redirect to failed page
+        getServletContext().getRequestDispatcher("/login_failure.jsp").forward(request, response);
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">

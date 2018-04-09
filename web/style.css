@@ -69,3 +69,8 @@ form table th {
 .error {
     color: #ff0000;
 }
+
+footer {
+    margin-top: 20px;
+    font-weight: bold;
+}
