@@ -1,20 +1,52 @@
 package beans;
 
+import java.io.Serializable;
+import java.util.Objects;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
+import javax.persistence.Transient;
+
 /**
  * Store user information
  */
-public class User {
+@Entity
+@Table(name = "user")
+public class User implements Serializable {
 
+    @Id
+    @Column(name = "username")
     private String username;
+
+    @Column(name = "password")
     private String password;
+
+    @Column(name = "first_name")
     private String firstName;
+
+    @Column(name = "last_name")
     private String lastName;
+
+    @Column(name = "phone")
     private String phone;
+
+    @Column(name = "address")
     private String address;
+
+    @Column(name = "city")
     private String city;
+
+    @Column(name = "state")
     private String state;
+
+    @Column(name = "zip_code")
     private String zipCode;
-    private String email;    
+
+    @Column(name = "email")
+    private String email;
+
+    @Transient
     private boolean loggedIn;
 
     /**
@@ -41,10 +73,39 @@ public class User {
         loggedIn = false;
     }
 
+    /**
+     * Get hash code for this user for comparison
+     */
+    @Override
+    public int hashCode() {
+        int hash = 3;
+        hash = 59 * hash + Objects.hashCode(this.username);
+        return hash;
+    }
+
+    /**
+     * Check if this user is the same as the other,
+     */
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+
+        User other = (User) obj;
+        return username.equals(other.username);
+    }
+
     /*
      * GETTER AND SETTER METHODS
      */
-
     public boolean isLoggedIn() {
         return loggedIn;
     }
@@ -52,7 +113,7 @@ public class User {
     public void setLoggedIn(boolean loggedIn) {
         this.loggedIn = loggedIn;
     }
-    
+
     public String getUsername() {
         return username;
     }

@@ -1,6 +1,7 @@
 package servlets;
 
 import beans.User;
+import database.UserDB;
 import java.io.IOException;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -8,10 +9,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-/**
- *
- * @author Hp Envy
- */
 public class NewCustomerServlet extends HttpServlet {
 
     /**
@@ -59,6 +56,9 @@ public class NewCustomerServlet extends HttpServlet {
         // Add the user to a session
         HttpSession session = request.getSession(true);
         session.setAttribute("user", user);
+        
+        // Add user to the database
+        UserDB.insert(user);
         
         getServletContext().getRequestDispatcher("/success.jsp").forward(request, response);
     }
